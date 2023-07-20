@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "FoodDash",
+    "slug": "FoodDash",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/fooddash-app-icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/fooddash-app-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/fooddash-app-icon.png",
+        "backgroundColor": "#eb4034"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
