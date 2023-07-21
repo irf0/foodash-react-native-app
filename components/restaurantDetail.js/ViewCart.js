@@ -1,8 +1,11 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { ArrowRightIcon, ShoppingBagIcon } from "react-native-heroicons/solid";
+import { useSelector } from "react-redux";
 
-const ViewCart = ({ setModalVisible, isPressed, cartItems }) => {
+const ViewCart = ({ setModalVisible, isPressed }) => {
+  const cartItems = useSelector((state) => state.cart.items);
+  const totalQuantity = cartItems.length;
   // const total = items
   //   .map((item) => Number(item.price.replace("$", "")))
   //   .reduce((prev, curr) => prev + curr, 0);
@@ -19,7 +22,7 @@ const ViewCart = ({ setModalVisible, isPressed, cartItems }) => {
           <View>
             <View className="flex top-10 right-80 left-10 z-40 h-7 w-7 rounded-full bg-green-100 justify-center items-center">
               {/* Cart Qty will be shown here.  */}
-              <Text className="text-lg">1</Text>
+              <Text className="text-lg">{totalQuantity}</Text>
             </View>
           </View>
         )}

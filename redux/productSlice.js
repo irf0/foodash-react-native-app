@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import foodData from "../utils/foodData";
 
 const initialState = {
-  products: foodData,
+  products: [],
   selectedProduct: null,
   //Imp! This is the func. that will show only the selected product in cart
 };
