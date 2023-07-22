@@ -47,6 +47,9 @@ const CartModal = ({ modalVisible, setModalVisible }) => {
     state.cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
   );
 
+  const subtotalWithTwoDecimals = subtotal.toFixed(2);
+  const subtotalAsNumber = parseFloat(subtotalWithTwoDecimals);
+
   const keyExtractor = (item) => item.id.toString();
   return (
     <Modal
@@ -163,9 +166,7 @@ const CartModal = ({ modalVisible, setModalVisible }) => {
           )}
           <View className="absolute bottom-0 left-5 p-1 flex">
             <Text className="text-xl font-semibold">Subtotal:</Text>
-            <Text className="text-lg font-semibold">
-              ${subtotal.toFixed(2)}
-            </Text>
+            <Text className="text-lg font-semibold">${subtotalAsNumber}</Text>
           </View>
         </View>
 
