@@ -4,6 +4,7 @@ import foodData from "../utils/foodData";
 const initialState = {
   items: [],
   totalPrice: 0,
+  restaurantName: "",
 };
 
 export const cartSlice = createSlice({
@@ -12,7 +13,7 @@ export const cartSlice = createSlice({
   reducers: {
     //Add an item to the cart.
     addItemToCart(state, action) {
-      const itemId = action.payload;
+      const { itemId, restaurantName } = action.payload;
       const existingItem = state.items.find((item) => item.id === itemId);
 
       if (existingItem) {
@@ -28,6 +29,7 @@ export const cartSlice = createSlice({
           state.totalPrice += newItem.price;
         }
       }
+      state.restaurantName = restaurantName;
     },
     //Remove an item from the cart.
     removeItemFromCart(state, action) {

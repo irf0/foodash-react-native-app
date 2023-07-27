@@ -1,10 +1,17 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
-import { HeartIcon } from "react-native-heroicons/outline";
+import React, { useState } from "react";
 import { ClockIcon, StarIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
 
 const RestaurantItem = ({ item }) => {
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handleLikePress = () => {
+    setIsPressed(!isPressed);
+  };
+
   const { image_url, name, rating, price, categories, review_count } = item;
   const navigation = useNavigation();
   return (
@@ -22,7 +29,11 @@ const RestaurantItem = ({ item }) => {
       }
     >
       <View>
-        <RestaurantImage image={image_url} />
+        <RestaurantImage
+          image={image_url}
+          isPressed={isPressed}
+          handleLikePress={handleLikePress}
+        />
         <RestaurantInfo
           name={name}
           rating={rating}
@@ -34,7 +45,7 @@ const RestaurantItem = ({ item }) => {
   );
 };
 
-const RestaurantImage = ({ image }) => (
+const RestaurantImage = ({ image, handleLikePress, isPressed }) => (
   <View>
     <Image
       source={{
@@ -46,8 +57,21 @@ const RestaurantImage = ({ image }) => (
         objectFit: "cover",
       }}
     />
-    <TouchableOpacity style={{ position: "absolute", right: 7, top: 5 }}>
-      <HeartIcon color="white" />
+    <TouchableOpacity
+      onPress={handleLikePress}
+      style={{ position: "absolute", right: 7, top: 5 }}
+    >
+      {!isPressed ? (
+        <AntDesign name="hearto" size={24} color="white" />
+      ) : (
+        <LottieView
+          style={{ height: 100, position: "absolute", right: -18, top: -28 }}
+          source={require("../assets/animations/likebutton.json")}
+          autoPlay
+          speed={1}
+          loop={false}
+        />
+      )}
     </TouchableOpacity>
   </View>
 );

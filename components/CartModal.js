@@ -17,9 +17,18 @@ import {
   updateTotalPrice,
 } from "../redux/cartSlice";
 import { AntDesign } from "@expo/vector-icons";
-//Cart Modal
+import { db } from "../firebase";
+import { addDoc, collection } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import LottieView from "lottie-react-native";
+
+//Items in the cart
 const CartModal = ({ modalVisible, setModalVisible }) => {
-  const cartItems = useSelector((state) => state.cart.items);
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+  const { items, restaurantName } = useSelector((state) => state.cart);
+
   const dispatch = useDispatch();
 
   //Remove item from cart
@@ -47,9 +56,29 @@ const CartModal = ({ modalVisible, setModalVisible }) => {
     state.cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
   );
 
+  //Restrict the price info to only two decimals after the price.
   const subtotalWithTwoDecimals = subtotal.toFixed(2);
   const subtotalAsNumber = parseFloat(subtotalWithTwoDecimals);
 
+  //Adding order data to firebase DB->Have to add the order to a db bcs else it will not show up in the in the next screen (Order screen)
+  const addOrderToFirebase = async () => {
+    if (restaurantName && items.length > 0) {
+      setLoading(true);
+      try {
+        // Add data to Firestore only if restaurantName and items are defined
+        const docRef = await addDoc(collection(db, "orders"), {
+          items: items,
+          restaurantName: restaurantName,
+        });
+        setModalVisible(false);
+        navigation.navigate("FinalCartScreen");
+        setLoading(false);
+      } catch (error) {
+        console.error("Error adding order to Firestore: ", error);
+        // Handle any errors that occur during the data addition process
+      }
+    }
+  };
   const keyExtractor = (item) => item.id.toString();
   return (
     <Modal
@@ -65,31 +94,41 @@ const CartModal = ({ modalVisible, setModalVisible }) => {
         }}
       >
         <View className="bg-white p-5 h-4/6 rounded-t-2xl">
-          <TouchableOpacity className="flex self-center -mt-2">
-            <AntDesign
-              name="downcircle"
-              size={26}
-              color="red"
-              onPress={() => setModalVisible(false)}
+          {!loading ? (
+            <TouchableOpacity className="flex self-center -mt-2">
+              <AntDesign
+                name="downcircle"
+                size={26}
+                color="red"
+                onPress={() => setModalVisible(false)}
+              />
+            </TouchableOpacity>
+          ) : (
+            <LottieView
+              style={{ height: 100, alignSelf: "center" }}
+              source={require("../assets/animations/loader.json")}
+              autoPlay
+              speed={0.7}
+              loop={true}
             />
-          </TouchableOpacity>
+          )}
 
           <View className="border-b-0.5 border-gray-400 flex-row justify-between">
             <Text className="my-2 text-lg font-bold">
-              Items added in cart : {cartItems.length}
+              Items added in cart : {items.length}
             </Text>
 
-            {cartItems.length > 0 && (
+            {items.length > 0 && (
               <TouchableOpacity onPress={handleClearCart}>
                 <Text className="my-3 text-sm text-gray-500">Clear all</Text>
               </TouchableOpacity>
             )}
           </View>
 
-          {cartItems.length > 0 ? (
+          {items.length > 0 ? (
             <FlatList
               showsVerticalScrollIndicator={false}
-              data={cartItems}
+              data={items}
               keyExtractor={keyExtractor}
               // Assuming your cart items have a unique identifier property like "id"
               renderItem={({ item }) => (
@@ -105,7 +144,7 @@ const CartModal = ({ modalVisible, setModalVisible }) => {
                           {item.title}
                         </Text>
                         <Text className="text-lg font-semibold">
-                          ${item.price * item.quantity}
+                          ${(item.price * item.quantity).toFixed(2)}
                         </Text>
                       </View>
                     </View>
@@ -164,15 +203,21 @@ const CartModal = ({ modalVisible, setModalVisible }) => {
               You do not have any items in the cart! 😒
             </Text>
           )}
-          <View className="absolute bottom-0 left-5 p-1 flex">
+          <View className="relative bottom-0 left-5 flex">
             <Text className="text-xl font-semibold">Subtotal:</Text>
-            <Text className="text-lg font-semibold">${subtotalAsNumber}</Text>
+            <Text className="text-lg font-bold">${subtotalAsNumber}</Text>
           </View>
         </View>
 
         <View className="absolute bottom-2 right-7">
-          <TouchableOpacity className="flex-row p-4 w-28 items-center justify-center rounded-lg bg-red-500">
-            <Text className="text-white text-lg font-bold">NEXT</Text>
+          <TouchableOpacity
+            onPress={() => {
+              addOrderToFirebase();
+            }}
+            className="flex-row p-4 w-28 items-center justify-center rounded-lg bg-red-500"
+          >
+            <Text className="text-white text-lg font-bold">Next</Text>
+
             <AntDesign name="caretright" size={23} color="white" />
           </TouchableOpacity>
         </View>

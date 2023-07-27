@@ -17,6 +17,9 @@ const HomeScreen = () => {
   const [page, setPage] = useState(1);
   const [city, setCity] = useState("NewYork");
   const [activeTab, setActiveTab] = useState("Delivery");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [noResults, setNoResults] = useState(false);
 
   //Coming from the LocationScreen component
   const route = useRoute();
@@ -32,6 +35,7 @@ const HomeScreen = () => {
         Authorization: `Bearer ${YELP_API_KEY}`,
       },
     };
+
     return fetch(yelpUrl, apiOptions)
       .then((res) => res.json())
       .then((json) => setRestaurantData(json.businesses));
@@ -53,8 +57,9 @@ const HomeScreen = () => {
           <MyAccount />
         </View>
         <LocationInput cityInput={cityInput} city={city} />
-        <SearchBar />
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <Categories />
+
         <FlatList
           data={restaurantData}
           keyExtractor={(item) => item.id.toString()}

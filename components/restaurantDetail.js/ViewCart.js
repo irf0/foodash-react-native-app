@@ -6,21 +6,13 @@ import { useSelector } from "react-redux";
 const ViewCart = ({ setModalVisible, isPressed }) => {
   const cartItems = useSelector((state) => state.cart.items);
   const totalQuantity = cartItems.length;
-  // const total = items
-  //   .map((item) => Number(item.price.replace("$", "")))
-  //   .reduce((prev, curr) => prev + curr, 0);
-
-  // const totalUSD = total.toLocaleString("en", {
-  //   style: "currency",
-  //   currency: "USD",
-  // });
 
   return (
     <>
       <View className="absolute bottom-2 left-36 right-20">
         {isPressed && (
           <View>
-            <View className="flex top-10 right-80 left-10 z-40 h-7 w-7 rounded-full bg-green-100 justify-center items-center">
+            <View className="flex top-10 right-80 left-10 z-40 h-7 w-7 rounded-full bg-gray-200 justify-center items-center">
               {/* Cart Qty will be shown here.  */}
               <Text className="text-lg">{totalQuantity}</Text>
             </View>

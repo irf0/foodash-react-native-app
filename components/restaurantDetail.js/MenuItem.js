@@ -11,14 +11,10 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import ViewCart from "./ViewCart";
 import { useDispatch, useSelector } from "react-redux";
 import CartModal from "../CartModal";
-import {
-  addItemToCart,
-  cartSlice,
-  updateTotalPrice,
-} from "../../redux/cartSlice";
+import { addItemToCart } from "../../redux/cartSlice";
 import foodData from "../../utils/foodData";
 
-const MenuItem = () => {
+const MenuItem = ({ restaurantName }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
@@ -26,7 +22,7 @@ const MenuItem = () => {
 
   //addToCart
   const handleAddToCart = (itemId) => {
-    dispatch(addItemToCart(itemId));
+    dispatch(addItemToCart({ itemId, restaurantName }));
     setIsPressed(true);
   };
 
@@ -38,14 +34,7 @@ const MenuItem = () => {
       >
         {foodData.map((food, index) => (
           <TouchableOpacity key={index} activeOpacity={0.8}>
-            <View className="flex-row p-3 px-3 mt-2 mx-2 border-0.5 shadow-lg rounded-md">
-              {/* <BouncyCheckbox
-                fillColor="green"
-                iconStyle={{ borderRadius: 4 }}
-                innerIconStyle={{ borderRadius: 4 }}
-               
-              /> */}
-
+            <View className="flex-row p-3 px-3 mt-2 mx-2 border-0.5 border-gray-400 shadow-lg rounded-md">
               <FoodInfo food={food} />
               <FoodImage food={food} />
             </View>
@@ -80,11 +69,6 @@ const FoodInfo = (props) => (
     <Text className="font-bold text-xl">{props.food.title}</Text>
     <Text className=" text-gray-600">{props.food.description}</Text>
     <Text className="font-bold text-lg">${props.food.price}</Text>
-  </View>
-);
-const FoodTitle = (props) => (
-  <View className=" w-2/3 justify-evenly mx-1">
-    <Text className="font-bold text-xl">{props.food.title}</Text>
   </View>
 );
 

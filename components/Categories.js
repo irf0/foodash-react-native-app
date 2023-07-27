@@ -1,5 +1,6 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React from "react";
+import { TouchableOpacity } from "react-native";
 
 const items = [
   {
@@ -33,11 +34,19 @@ const items = [
 ];
 
 const Categories = () => {
+  const handleAlert = () => {
+    Alert.alert("Feature under development! Coming soon...🙏");
+  };
+
   return (
     <View className="flex-row gap-2">
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {items.map((item, index) => (
-          <View key={index} className="items-center mr-3">
+          <TouchableOpacity
+            onPress={handleAlert}
+            key={index}
+            className="items-center mr-3"
+          >
             <Image
               source={item.image}
               style={{
@@ -47,7 +56,7 @@ const Categories = () => {
               }}
             />
             <Text style={{ fontSize: 13, fontWeight: "900" }}>{item.text}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>
